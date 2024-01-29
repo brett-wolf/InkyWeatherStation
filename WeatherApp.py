@@ -49,8 +49,12 @@ hanken_bold_font = ImageFont.truetype(HankenGroteskBold, int(10 * scale_size))
 
 # Get data from weather provider
 try:
-    data = WeatherData(37.55589989488259, -77.4800165092538, "6284869d5895baaf5f2537c1e6872fb0")
+    print("Calling weather data function")
 
+    data = WeatherData(37.55589989488259, -77.4800165092538, "6284869d5895baaf5f2537c1e6872fb0")
+    data.getWeatherData()
+    
+    print(data["current"])
 except:
     print("Error in calling the weather API")
     #return
