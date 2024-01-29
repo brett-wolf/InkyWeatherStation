@@ -12,19 +12,19 @@ def getsize(font, text):
     return (right, bottom)
 
 #print the current time
-print(strftime("%X %Z"))
+#print(strftime("%X %Z"))
 
 #print the current date
-print(strftime("%d-%m-%Y"))
+#print(strftime("%d-%m-%Y"))
 
 #print the current day
-print(strftime("%A"))
+#print(strftime("%A"))
 
 #print time in London
 londonTimeZone = pytz.timezone('Europe/London')
 timeInLondon = datetime.now(londonTimeZone)
 currentTimeInLondon = timeInLondon.strftime("%X %Z")
-print(currentTimeInLondon)
+#print(currentTimeInLondon)
 
 try:
     inky_display = auto(ask_user=True, verbose=True)
@@ -54,14 +54,19 @@ try:
     data = WeatherData(37.55589989488259, -77.4800165092538, "6284869d5895baaf5f2537c1e6872fb0")
     data.getWeatherData()
     
-    print(data["current"])
+    print(data.currentweather.temp)
+    print(data.currentweather.tempfeels)
+
 except:
     print("Error in calling the weather API")
     #return
 
+icon = ImageFont.truetype("/home/evolmonster/InkyWeatherStation/weathericons-regular-webfont.ttf", 46)
+
 
 # Set the message
-message = strftime("%X")
+#message = str(data.currentweather.temp)
+message = "\uf00d"
 
 # Top and bottom y-coordinates for the white strip
 y_top = int(inky_display.height * (0 / 10.0))
@@ -83,7 +88,8 @@ message_w, message_h = getsize(hanken_bold_font, message)
 message_x = int((inky_display.width - message_w) / 2)
 message_y = 0 + padding
 
-draw.text((message_x, message_y), message, inky_display.BLACK, font=hanken_bold_font)
+#draw.text((message_x, message_y), message, inky_display.BLACK, font=hanken_bold_font)
+draw.text((message_x, message_y), message, inky_display.BLACK, font=icon)
 
 inky_display.set_image(img)
 
