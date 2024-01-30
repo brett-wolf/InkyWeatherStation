@@ -5,9 +5,6 @@ class Values(object):
 
 class WeatherData(object):
     URL = "https://api.openweathermap.org/data/2.5/weather?lat={0}&lon={1}&appid={2}&units=imperial"
-    #LAT HOME : 37.55589989488259
-    #LON HOME : -77.4800165092538
-    #API KEY  : 6284869d5895baaf5f2537c1e6872fb0
     
     def __init__(self,latitude,longitude,apikey):
         self._latitude = latitude
@@ -26,7 +23,8 @@ class WeatherData(object):
       val.windspeed = jsonobject["wind"]["speed"]
       val.sunrise = datetime.datetime.fromtimestamp(jsonobject["sys"]["sunrise"])
       val.sunset = datetime.datetime.fromtimestamp(jsonobject["sys"]["sunset"])
-      return val
+
+      return val 
     
     def getWeatherData(self):
         print("In weather data function")
