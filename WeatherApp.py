@@ -8,20 +8,15 @@ from font_hanken_grotesk import HankenGroteskBold, HankenGroteskMedium
 from WeatherData import WeatherData
 from LoggingHandler import LoggingHandler
 from ConfigHandler import ConfigHandler
+config = ConfigHandler()
 
-class WeatherApp(ConfigHandler):
-
-    def __init__(self):
-        opts = {}
-        self.read_config(opts)
-        self.set_options(self.opts)
-
-        
-
+class WeatherApp:
 
     def getsize(font, text):
         _, _, right, bottom = font.getbbox(text)
         return (right, bottom)
+
+
 
     #print the current time
     #print(strftime("%X %Z"))
@@ -65,7 +60,7 @@ class WeatherApp(ConfigHandler):
         print("Calling weather data function")
 
         #data = WeatherData(37.55589989488259, -77.4800165092538, "6284869d5895baaf5f2537c1e6872fb0")
-        data = WeatherData(self.opts.latitude, self.opts.longitude, self.opts.api_key)
+        data = WeatherData(config.latitudes, config.longitude, config.api_key)
         data.getWeatherData()
         
         print(data.currentweather.temp)
@@ -73,8 +68,6 @@ class WeatherApp(ConfigHandler):
 
     except Exception as exc:
         LoggingHandler.handle_exception("Error in calling the weather API", exc)
-        #tb_str = ''.join(traceback.format_exception(None, exc, exc.__traceback__))
-        #logging.error("Error in calling the weather API with exception " + tb_str)
 
     icon = ImageFont.truetype("/home/evolmonster/InkyWeatherStation/weathericons-regular-webfont.ttf", 46)
 
