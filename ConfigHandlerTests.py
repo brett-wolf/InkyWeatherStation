@@ -3,12 +3,17 @@ from ConfigHandler import ConfigHandler
 
 class TestConfigHandler(unittest.TestCase):
     
-    def test_init(self):
-        config = ConfigHandler()
+    def setUp(self):
+        self.config = ConfigHandler()
 
-        self.assertIsNotNone(config)
-        self.assertEqual(config.latitude, "37.55589989488259")
-        self.assertEqual(config.longitude, "-77.4800165092538")
+    def test_config_exists(self):
+        self.assertIsNotNone(self.config)
+
+    def test_config_latitude(self):        
+        self.assertEqual(self.config.latitude, "37.55589989488259")
+    
+    def test_config_longitude(self):
+        self.assertEqual(self.config.longitude, "-77.4800165092538")
 
 if __name__ == '__main__':
     unittest.main()

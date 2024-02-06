@@ -1,11 +1,10 @@
 import os, json
 
 class ConfigHandler:
-    CONFIG_FILE = "./config.json"
+    CONFIG_FILE = "./config/config.json"
 
     def __init__(self):
         if os.path.exists(self.CONFIG_FILE):
-            print("Loading config file")
             with open(self.CONFIG_FILE, 'r') as data:
                 self.__dict__ = json.loads(data.read())
         else:
