@@ -3,3 +3,4 @@ config.json
 logging.log
 __pycache__/ConfigHandler.cpython-39.pyc
 __pycache__/LoggingHandler.cpython-39.pyc
+__pycache__/ConfigHandlerTests.cpython-39.pyc

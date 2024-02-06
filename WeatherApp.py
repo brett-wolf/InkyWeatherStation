@@ -59,8 +59,7 @@ class WeatherApp:
     try:
         print("Calling weather data function")
 
-        #data = WeatherData(37.55589989488259, -77.4800165092538, "6284869d5895baaf5f2537c1e6872fb0")
-        data = WeatherData(config.latitudes, config.longitude, config.api_key)
+        data = WeatherData(config.latitude, config.longitude, config.api_key)
         data.getWeatherData()
         
         print(data.currentweather.temp)
