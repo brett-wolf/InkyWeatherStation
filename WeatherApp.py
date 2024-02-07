@@ -51,11 +51,10 @@ class WeatherApp:
         LoggingHandler.handle_exception("Error in calling the weather API", exc)
 
 
-    # Set the message
-    #TODO we can switch the icon here from day to night. [0] is the day icon, [1] is the night
-    #Something like (hour.id,current.sunrise<hour.dt and hour.dt < current.sunset)
-    
+    # Set the message. If its night time, take the second icon, which is for night
     message = data.currentweather.icon[0]
+    if data.currentweather.dateTime > data.currentweather.sunrise and data.currentweather.dateTime > data.currentweather.sunset:
+        message = data.currentweather.icon[1]
 
     # Top and bottom y-coordinates for the white strip
     y_top = int(inky_display.height * (0 / 10.0))
