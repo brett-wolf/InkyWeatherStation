@@ -16,23 +16,6 @@ class WeatherApp:
         _, _, right, bottom = font.getbbox(text)
         return (right, bottom)
 
-
-
-    #print the current time
-    #print(strftime("%X %Z"))
-
-    #print the current date
-    #print(strftime("%d-%m-%Y"))
-
-    #print the current day
-    #print(strftime("%A"))
-
-    #print time in London
-    londonTimeZone = pytz.timezone('Europe/London')
-    timeInLondon = datetime.now(londonTimeZone)
-    currentTimeInLondon = timeInLondon.strftime("%X %Z")
-    #print(currentTimeInLondon)
-
     try:
         inky_display = auto(ask_user=True, verbose=True)
     except TypeError:
@@ -54,26 +37,25 @@ class WeatherApp:
 
     # Load the fonts
     hanken_bold_font = ImageFont.truetype(HankenGroteskBold, int(10 * scale_size))
+    weather_icons_font = ImageFont.truetype("./fonts/weathericons-regular-webfont.ttf", 46)
 
     # Get data from weather provider
     try:
         print("Calling weather data function")
-
-        data = WeatherData(config.latitude, config.longitude, config.api_key)
+        print(config.latitude)
+        print(config.weather_url)
+        data = WeatherData(config.latitude, config.longitude, config.api_key, config.weather_url)
         data.getWeatherData()
-        
-        print(data.currentweather.temp)
-        print(data.currentweather.tempfeels)
 
     except Exception as exc:
         LoggingHandler.handle_exception("Error in calling the weather API", exc)
 
-    icon = ImageFont.truetype("/home/evolmonster/InkyWeatherStation/weathericons-regular-webfont.ttf", 46)
-
 
     # Set the message
-    #message = str(data.currentweather.temp)
-    message = "\uf00d"
+    #TODO we can switch the icon here from day to night. [0] is the day icon, [1] is the night
+    #Something like (hour.id,current.sunrise<hour.dt and hour.dt < current.sunset)
+    
+    message = data.currentweather.icon[0]
 
     # Top and bottom y-coordinates for the white strip
     y_top = int(inky_display.height * (0 / 10.0))
@@ -96,7 +78,7 @@ class WeatherApp:
     message_y = 0 + padding
 
     #draw.text((message_x, message_y), message, inky_display.BLACK, font=hanken_bold_font)
-    draw.text((message_x, message_y), message, inky_display.BLACK, font=icon)
+    draw.text((message_x, message_y), message, inky_display.BLACK, font=weather_icons_font)
 
     inky_display.set_image(img)
 

@@ -15,5 +15,8 @@ class TestConfigHandler(unittest.TestCase):
     def test_config_longitude(self):
         self.assertEqual(self.config.longitude, "-77.4800165092538")
 
+    def test_config_weatherurl(self):
+        self.assertIsNotNone(self.config.weather_url)
+
 if __name__ == '__main__':
     unittest.main()
