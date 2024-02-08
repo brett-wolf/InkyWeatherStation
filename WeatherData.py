@@ -1,4 +1,4 @@
-import requests, json, datetime
+import requests, json, datetime, math
 from ConfigHandler import ConfigHandler
 config = ConfigHandler()
 
@@ -89,8 +89,8 @@ class WeatherData(object):
     def _parse_data(self,jsonobject):
       val = Values()
       val.dateTime = datetime.datetime.fromtimestamp(jsonobject["dt"])
-      val.temp = jsonobject["main"]["temp"]
-      val.tempfeels = jsonobject["main"]["feels_like"]
+      val.temp = math.ceil(jsonobject["main"]["temp"])
+      val.tempfeels = math.ceil(jsonobject["main"]["feels_like"])
       val.description = jsonobject["weather"][0]["description"]
       val.icon = self._set_weather_icon(jsonobject["weather"][0]["id"]) #TODO we cant assume this will have something?
       val.humidity = jsonobject["main"]["humidity"]

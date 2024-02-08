@@ -21,23 +21,21 @@ class WeatherApp:
     except TypeError:
         logging.error("Inky display not found")
         raise TypeError("You need to update the Inky library to >= v1.1.0")
-
-    try:
-        inky_display.set_border(inky_display.BLACK)
-    except NotImplementedError:
-        pass
+    
+    #try:
+    #    inky_display.set_border(inky_display.BLACK)
+    #except NotImplementedError:
+    #    pass
 
     # Set scaling for display size
     scale_size = 2.20
     padding = 15
 
-    # Create a new canvas to draw on
-    img = Image.new("P", inky_display.resolution)
-    draw = ImageDraw.Draw(img)
-
     # Load the fonts
     hanken_bold_font = ImageFont.truetype(HankenGroteskBold, int(10 * scale_size))
     weather_icons_font = ImageFont.truetype("./fonts/weathericons-regular-webfont.ttf", 46)
+    source_code_pro_font = ImageFont.truetype("./fonts/SourceCodePro.ttf", 15)
+    source_code_pro_bold_font = ImageFont.truetype("./fonts/SourceCodePro-Bold.ttf", 17)
 
     # Get data from weather provider
     try:
@@ -50,35 +48,43 @@ class WeatherApp:
     except Exception as exc:
         LoggingHandler.handle_exception("Error in calling the weather API", exc)
 
-
+    #TODO: After midnight, it goes to the next day. Making the sun show instead of stars after midnight
     # Set the message. If its night time, take the second icon, which is for night
-    message = data.currentweather.icon[0]
+    current_icon = data.currentweather.icon[0]
     if data.currentweather.dateTime > data.currentweather.sunrise and data.currentweather.dateTime > data.currentweather.sunset:
-        message = data.currentweather.icon[1]
+        current_icon = data.currentweather.icon[1]
+    
+    print("sunrise:" + str(data.currentweather.sunrise))
+    print("sunset:" + str(data.currentweather.sunset))
+    print("time:" + str(data.currentweather.dateTime))
 
-    # Top and bottom y-coordinates for the white strip
-    y_top = int(inky_display.height * (0 / 10.0))
-    y_bottom = y_top + int(inky_display.height * (3.0 / 10.0))
+    print("HourMinute:" + str(data.currentweather.dateTime.time())[0:5])
 
-    for y in range(0, y_top):
-        for x in range(0, inky_display.width):
-            img.putpixel((x, y), inky_display.BLACK if inky_display.colour == "black" else inky_display.BLACK)
-    for y in range(y_top, y_bottom):
-        for x in range(0, inky_display.width):
-            img.putpixel((x, y), inky_display.WHITE)
-
-    for y in range(y_bottom, inky_display.height):
-        for x in range(0, inky_display.width):
-            img.putpixel((x, y), inky_display.BLACK if inky_display.colour == "black" else inky_display.BLACK)
-
-    # Calculate position and draw the message
-    message_w, message_h = getsize(hanken_bold_font, message)
-    message_x = int((inky_display.width - message_w) / 2)
-    message_y = 0 + padding
+    current_description = data.currentweather.description
+    current_temp = "temp: " + str(data.currentweather.temp) #TODO make a string in handler
+    current_feels = "feels like: " + str(data.currentweather.tempfeels) #TODO make a string in handler
+    
+    # Create a new canvas to draw on
+    img = Image.new("P", inky_display.resolution)
+    canvas = ImageDraw.Draw(img)
 
     #draw.text((message_x, message_y), message, inky_display.BLACK, font=hanken_bold_font)
-    draw.text((message_x, message_y), message, inky_display.BLACK, font=weather_icons_font)
+    #canvas.text((message_x, message_y), message, inky_display.BLACK, font=weather_icons_font)
+    canvas.text((15, 5), current_icon, inky_display.BLACK, font=weather_icons_font)
+    canvas.text((10, 60), current_description, inky_display.BLACK, font=source_code_pro_bold_font)
+    canvas.text((10, 80), current_temp, inky_display.BLACK, font=source_code_pro_font)
+    canvas.text((10, 100), current_feels, inky_display.BLACK, font=source_code_pro_font)
 
+    #canvas.line([(0,120),(0,120)], fill=inky_display.BLACK,width=5, joint="curve")
+    #corners=(top_left, top_right, bottom_right, bottom_left)
+    canvas.rounded_rectangle((0, 0, 160, 130), 
+                            fill=None, 
+                            outline=inky_display.BLACK, 
+                            width=3, 
+                            radius=7, 
+                            corners=(False,False,True,False))
+
+    #canvas.rectangle([(0,120),(120,0)], fill=inky_display.WHITE, outline=inky_display.BLACK, width=3)
     inky_display.set_image(img)
 
     #inky_display.getModified()
