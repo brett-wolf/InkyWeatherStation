@@ -14,7 +14,7 @@ class ToDoData(object):
     def _parse_data(self,tasklist):
         val = Values()
         val.tasks=[]
-        
+        #TODO - cut the end of the task if its to long
         for task in tasklist:
             val.tasks.append(task.content)
 
