@@ -8,6 +8,7 @@ from font_hanken_grotesk import HankenGroteskBold, HankenGroteskMedium
 from WeatherData import WeatherData
 from LoggingHandler import LoggingHandler
 from ConfigHandler import ConfigHandler
+from ToDoData import ToDoData
 config = ConfigHandler()
 
 class WeatherApp:
@@ -37,6 +38,7 @@ class WeatherApp:
     weather_icons_font_small = ImageFont.truetype("./fonts/weathericons-regular-webfont.ttf", 20)
     source_code_pro_font = ImageFont.truetype("./fonts/SourceCodePro.ttf", 15)
     source_code_pro_bold_font = ImageFont.truetype("./fonts/SourceCodePro-Bold.ttf", 17)
+    source_code_pro_bold_font_large = ImageFont.truetype("./fonts/SourceCodePro-Bold.ttf", 35)
 
     # Get data from weather provider
     try:
@@ -48,6 +50,17 @@ class WeatherApp:
 
     except Exception as exc:
         LoggingHandler.handle_exception("Error in calling the weather API", exc)
+    
+    try:
+        print("calling todo api")
+        tododata = ToDoData(config.todoist_key, config.todoist_project)
+        tododata.GetTodoList()
+        print(tododata.todolist.tasks)
+    except Exception as exc:
+        LoggingHandler.handle_exception("Error in calling the todo API", exc) 
+
+    #TODO Check if we have weather and TODO data. If not, no need to update the screen
+    #Eventually we want to store the data locally, and reload it with an error picture somewhere on screen so I know it didnt update
 
     #TODO: After midnight, it goes to the next day. Making the sun show instead of stars after midnight
     # Set the message. If its night time, take the second icon, which is for night
@@ -55,14 +68,16 @@ class WeatherApp:
     if data.currentweather.dateTime > data.currentweather.sunrise and data.currentweather.dateTime > data.currentweather.sunset:
         current_icon = data.currentweather.icon[1]
     
-    print("sunrise:" + str(data.currentweather.sunrise))
-    print("sunset:" + str(data.currentweather.sunset))
-    print("time:" + str(data.currentweather.dateTime))
+    #print("sunrise:" + str(data.currentweather.sunrise))
+    #print("sunset:" + str(data.currentweather.sunset))
+    #print("time:" + str(data.currentweather.dateTime))
 
-    print("HourMinute:" + str(data.currentweather.dateTime.time())[0:5])
+    #print("HourMinute:" + str(data.currentweather.dateTime.time())[0:5])
 
     current_description = data.currentweather.description
     current_temp = str(data.currentweather.temp) #TODO make a string in handler
+    current_max_temp = str(data.currentweather.max) #TODO make a string in handler
+    current_min_temp = str(data.currentweather.min) #TODO make a string in handler
     current_feels = str(data.currentweather.tempfeels) #TODO make a string in handler
     current_sunrise = str(data.currentweather.sunrise.time())[0:5]
     current_sunset = str(data.currentweather.sunset.time())[0:5]
@@ -79,36 +94,36 @@ class WeatherApp:
     canvas.text((10, 5), current_icon, inky_display.BLACK, font=weather_icons_font)
 
     #Sunrise / Sunset display
-    canvas.text((82, 8), "\uf046", inky_display.BLACK, font=weather_icons_font_small)
-    canvas.text((82, 30), "\uf047", inky_display.BLACK, font=weather_icons_font_small)
-    canvas.text((108, 15), current_sunrise, inky_display.BLACK, font=source_code_pro_font)    
-    canvas.text((108, 34), current_sunset, inky_display.BLACK, font=source_code_pro_font)
+    canvas.text((160, 8), "\uf046", inky_display.BLACK, font=weather_icons_font_small)
+    canvas.text((160, 30), "\uf047", inky_display.BLACK, font=weather_icons_font_small)
+    canvas.text((190, 15), current_sunrise, inky_display.BLACK, font=source_code_pro_font)    
+    canvas.text((190, 34), current_sunset, inky_display.BLACK, font=source_code_pro_font)
 
     #Current weather temp and description
-    canvas.text((10, 60), current_description, inky_display.BLACK, font=source_code_pro_bold_font)
-    canvas.text((10, 80), "temp:", inky_display.BLACK, font=source_code_pro_font)
-    canvas.text((60, 78), current_temp, inky_display.BLACK, font=source_code_pro_bold_font)
+    canvas.text((10, 80), current_description, inky_display.BLACK, font=source_code_pro_bold_font)
 
-    canvas.text((10, 100), "feels like:", inky_display.BLACK, font=source_code_pro_font)
-    canvas.text((110, 98), current_feels, inky_display.BLACK, font=source_code_pro_bold_font)
+    #canvas.text((10, 130), "temp:", inky_display.BLACK, font=source_code_pro_font)
+    canvas.text((97, 18), current_temp, inky_display.BLACK, font=source_code_pro_bold_font_large)
+    canvas.text((95, 55), current_min_temp, inky_display.BLACK, font=source_code_pro_font)
+    canvas.text((122, 55), current_max_temp, inky_display.BLACK, font=source_code_pro_font)
+
+    #canvas.text((10, 150), "feels like:", inky_display.BLACK, font=source_code_pro_font)
+    #canvas.text((110, 158), current_feels, inky_display.BLACK, font=source_code_pro_bold_font)
 
     #canvas.line([(0,120),(0,120)], fill=inky_display.BLACK,width=5, joint="curve")
     #corners=(top_left, top_right, bottom_right, bottom_left)
-    canvas.rounded_rectangle((0, 0, 160, 130), 
+    canvas.rounded_rectangle((0, 0, 160, 150), 
                             fill=None, 
                             outline=inky_display.BLACK, 
                             width=3, 
                             radius=7, 
                             corners=(False,False,True,False))
     
-    #canvas.rounded_rectangle((130, 150, 210, 210), 
-    #                        fill=None, 
-    #                        outline=inky_display.BLACK, 
-    #                        width=3, 
-    #                        radius=7, 
-    #                        corners=(False,False,True,False))
+    #10, 80, 80, 140
+    #(Left starting point of circle, top point of the arc, Right end of arc, bottom line of arc)
+    canvas.arc((85, 8, 150, 70), start=140, end=40, fill=inky_display.BLACK, width=4)
 
-    canvas.chord((130, 220, 210, 300), start=140, end=40, fill=inky_display.BLACK, width=6)
+    #canvas.ellipse((85, 8, 150, 70), fill=inky_display.RED, width=4)
 
     #canvas.rectangle([(0,120),(120,0)], fill=inky_display.WHITE, outline=inky_display.BLACK, width=3)
     inky_display.set_image(img)

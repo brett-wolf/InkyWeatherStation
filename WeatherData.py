@@ -6,7 +6,6 @@ class Values(object):
   pass
 
 class WeatherData(object):
-    #URL = "https://api.openweathermap.org/data/2.5/weather?lat={0}&lon={1}&appid={2}&units=imperial"
     
     def __init__(self,latitude,longitude,apikey,weatherurl):
         self._latitude = latitude
@@ -90,6 +89,8 @@ class WeatherData(object):
       val = Values()
       val.dateTime = datetime.datetime.fromtimestamp(jsonobject["dt"])
       val.temp = math.ceil(jsonobject["main"]["temp"])
+      val.min = math.ceil(jsonobject["main"]["temp_min"])
+      val.max = math.ceil(jsonobject["main"]["temp_max"])
       val.tempfeels = math.ceil(jsonobject["main"]["feels_like"])
       val.description = jsonobject["weather"][0]["description"]
       val.icon = self._set_weather_icon(jsonobject["weather"][0]["id"]) #TODO we cant assume this will have something?
