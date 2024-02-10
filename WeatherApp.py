@@ -133,6 +133,14 @@ class WeatherApp:
     #canvas.ellipse((85, 8, 150, 70), fill=inky_display.RED, width=4)
 
     #canvas.rectangle([(0,120),(120,0)], fill=inky_display.WHITE, outline=inky_display.BLACK, width=3)
+
+    #TODO: High, trying a loop for tasks
+    todoline = 180
+    for task in tododata.todolist:
+        print(task)
+        canvas.text((15, todoline), task, inky_display.BLACK, font=source_code_pro_font)
+        todoline + 20
+
     inky_display.set_image(img)
 
     #inky_display.getModified()
