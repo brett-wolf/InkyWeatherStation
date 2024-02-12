@@ -1,2 +1,5 @@
 Pillow==10.2.0
 todoist-api-python
+google-api-python-client
+google-auth-httplib2
+google-auth-oauthlib

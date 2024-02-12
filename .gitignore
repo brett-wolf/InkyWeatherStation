@@ -1,3 +1,5 @@
 config.json
 logging.log
 __pycache__
+config/token.json
+config/googlesecretdesktop.json
