@@ -6,9 +6,6 @@ class Values(object):
   pass
 
 class ToDoData(object):
-
-
-
     def __init__(self,todoapikey,projectid):
         self._todoapikey = todoapikey
         self._projectid = projectid
