@@ -1,7 +1,7 @@
 import os, json
 
 class ConfigHandler:
-    CONFIG_FILE = "./config/config.json"
+    CONFIG_FILE = "/home/evolmonster/InkyWeatherStation/config/config.json"
 
     def __init__(self):
         if os.path.exists(self.CONFIG_FILE):

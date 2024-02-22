@@ -1,9 +1,10 @@
+from datetime import datetime
 import logging, traceback
 from logging.handlers import RotatingFileHandler
 
 log_formatter = logging.Formatter('%(asctime)s %(levelname)s %(funcName)s(%(lineno)d) %(message)s')
 
-logFile = './logs/logging.log'
+logFile = '/home/evolmonster/InkyWeatherStation/logs/logging.log'
 
 my_handler = RotatingFileHandler(logFile, mode='w', maxBytes=5*1024*1024, backupCount=1, encoding=None, delay=0)
 my_handler.setFormatter(log_formatter)
@@ -22,4 +23,7 @@ class LoggingHandler(object):
             app_log.error(exc_message + " " + tb_str)
         else:
             app_log.error(exc_message)
-        
+    
+    def log_run_complete():
+        with open('/home/evolmonster/InkyWeatherStation/logs/lastrun.txt', 'w+') as f:
+            f.write(str(datetime.now().strftime('%A %d %b %H:%M:%S')))
