@@ -16,11 +16,18 @@ class WeatherData:
         eve,
         night,
         humidity,
+        humidity_icon,
         weatherid,
         description,
         pop,
+        precipitation_icon,
         uvi,
+        uv_icon,
         day_of_week,
+        wind_speed,
+        wind_icon,
+        cloud_percent,
+        cloud_icon
     ):
         self.datetime = dt
         self.sunrise = sunrise
@@ -33,11 +40,18 @@ class WeatherData:
         self.evening_temp = eve
         self.night_temp = night
         self.humidity = humidity
+        self.humidity_icon = humidity_icon
         self.weather_icon = weatherid
         self.weather_description = description
         self.precipitation_chance = pop
+        self.precipitation_icon = precipitation_icon
         self.uv_index = uvi
+        self.uv_icon = uv_icon
         self.day_of_week = day_of_week
+        self.wind_speed = wind_speed
+        self.wind_icon = wind_icon
+        self.cloud_percent = cloud_percent
+        self.cloud_icon = cloud_icon
 
 
 class WeatherDataHandler(object):
@@ -118,26 +132,87 @@ class WeatherDataHandler(object):
         # TODO: If not - return some default
 
     def _set_moon_icon(self, moon_percent):
-        moon_map = {0: {"\XXXXXX"}, 20: {"\XXXXXX"}, 40: {"\XXXXXX"}, 100: {"\XXXXXX"}}
-        if moon_percent in moon_map:
-            return moon_map[moon_percent]
+        if moon_percent == 0 or moon_percent == 1:        #0 = New Moon
+          return "\uf0eb"
+        
+        elif moon_percent > 0 and moon_percent < 0.05:    #0 - 0.24 = Waxing cresent
+          return "\uf0d0"
+        elif moon_percent >= 0.05 and moon_percent < 0.1:
+          return "\uf0d2"
+        elif moon_percent >= 0.1 and moon_percent < 0.15:
+          return "\uf0d3"
+        elif moon_percent >= 0.15 and moon_percent < 0.2:
+          return "\uf0d4"
+        elif moon_percent >= 0.2 and moon_percent < 0.25:
+          return "\uf0d5"
+
+        elif moon_percent == 0.25:                        #0.25 = First quarter moon (half moon)
+          return "\uf0d6"
+        
+        elif moon_percent > 0.25 and moon_percent < 0.3:  #0.26 - 0.5 = Waxing gibbous
+          return "\uf0d7"
+        elif moon_percent >= 0.3 and moon_percent < 0.35:
+          return "\uf0d8"
+        elif moon_percent >= 0.35 and moon_percent < 0.4:
+          return "\uf0d9"
+        elif moon_percent >= 0.4 and moon_percent < 0.45:
+          return "\uf0da"
+        elif moon_percent >= 0.45 and moon_percent < 0.5:
+          return "\uf0db"
+
+        elif moon_percent == 0.5:                         #0.5 = Full Moon
+          return "\uf0dd"
+        
+        elif moon_percent > 0.5 and moon_percent <= 0.55: #0.6 - 0.74 = Waning gibbous
+          return "\uf0de"
+        elif moon_percent >= 0.55 and moon_percent < 0.6:
+          return "\uf0df"
+        elif moon_percent >= 0.6 and moon_percent < 0.65:
+          return "\uf0e1"
+        elif moon_percent >= 0.65 and moon_percent < 0.7:
+          return "\uf0e2"
+        elif moon_percent >= 0.7 and moon_percent < 0.75:
+          return "\uf0e3"
+
+        elif moon_percent == 0.75:                        #0.75 = Last/Third quarter moon
+          return "\uf0e4"
+
+        elif moon_percent > 0.75 and moon_percent < 0.8:    #0.76 - 0.99 = Waning cresent
+          return "\uf0e6"
+        elif moon_percent >= 0.8 and moon_percent < 0.85:
+          return "\uf0e7"
+        elif moon_percent >= 0.85 and moon_percent < 0.9:
+          return "\uf0e8"
+        elif moon_percent >= 0.9 and moon_percent < 0.95:
+          return "\uf0e9"
+        elif moon_percent >= 0.95 and moon_percent < 1:
+          return "\uf0ea"
+
+        else:
+          return "\uf070"
 
     def _parse_data(self, jsonobject):
         return_class = []
-
+        days_count = 0
         for daydata in jsonobject["daily"]:
+            if days_count == 6: #stop when we have 5 days of weather
+              break
+
             day_of_the_week = datetime.fromtimestamp(daydata["dt"]).strftime("%A")
+            moon_icon = self._set_moon_icon(daydata["moon_phase"])
             weather_icon = self._set_weather_icon(daydata["weather"][0]["id"])[0]
-            # current_icon = data.currentweather.icon[0]
-            # if data.currentweather.dateTime > data.currentweather.sunrise and data.currentweather.dateTime > data.currentweather.sunset:
-            #    current_icon = data.currentweather.icon[1]
+            humidity_icon = "\uf07a"
+            precipitation_percentage_icon = "\uf078"
+            uv_icon = "\uf052"
+            wind_icon = "\uf050"
+            cloud_icon = "\uf083" #cloud with sun
+
             if (
-                datetime.now() > daydata["sunrise"]
-                and datetime.now() > daydata["sunset"]
+                datetime.now() > datetime.fromtimestamp(daydata["sunrise"])
+                and datetime.now() > datetime.fromtimestamp(daydata["sunset"])
             ):
                 weather_icon = weather_icon[1]
-
-            moon_icon = self._set_moon_icon(daydata["moon_phase"])
+                cloud_icon = "\uf081" #cloud with moon
 
             return_class.append(
                 WeatherData(
@@ -152,25 +227,21 @@ class WeatherDataHandler(object):
                     daydata["temp"]["eve"],
                     daydata["temp"]["night"],
                     daydata["humidity"],
+                    humidity_icon,
                     weather_icon,
                     daydata["weather"][0]["description"],
                     daydata["pop"],
+                    precipitation_percentage_icon,
                     daydata["uvi"],
+                    uv_icon,
                     day_of_the_week,
+                    daydata["wind_speed"],
+                    wind_icon,
+                    daydata["clouds"],
+                    cloud_icon
                 )
             )
-
-        # val.dateTime = datetime.datetime.fromtimestamp(jsonobject["dt"])
-        # val.temp = math.ceil(jsonobject["main"]["temp"])
-        # val.min = math.ceil(jsonobject["main"]["temp_min"])
-        # val.max = math.ceil(jsonobject["main"]["temp_max"])
-        # val.tempfeels = math.ceil(jsonobject["main"]["feels_like"])
-        # val.description = jsonobject["weather"][0]["description"]
-        # val.icon = self._set_weather_icon(jsonobject["weather"][0]["id"]) #TODO we cant assume this will have something?
-        # val.humidity = jsonobject["main"]["humidity"]
-        # val.windspeed = jsonobject["wind"]["speed"]
-        # val.sunrise = datetime.datetime.fromtimestamp(jsonobject["sys"]["sunrise"])
-        # val.sunset = datetime.datetime.fromtimestamp(jsonobject["sys"]["sunset"])
+            days_count += 1
 
         return return_class
 

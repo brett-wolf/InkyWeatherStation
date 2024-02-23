@@ -31,51 +31,26 @@ def main():
     padding = 15
 
     # Set display visibility
-    current_weather_display = False
+    current_weather_display = True
     tomorrow_weather_display = False
     todo_list_display = False
     calendar_events_display = False
 
+    #TODO Change these font locations to a variable in config
     # Load the fonts
-    weather_icons_font = ImageFont.truetype(
-        "/home/evolmonster/InkyWeatherStation/fonts/weathericons-regular-webfont.ttf",
-        46,
-    )
-    weather_icons_font_small = ImageFont.truetype(
-        "/home/evolmonster/InkyWeatherStation/fonts/weathericons-regular-webfont.ttf",
-        20,
-    )
-    source_code_pro_font_small = ImageFont.truetype(
-        "/home/evolmonster/InkyWeatherStation/fonts/SourceCodePro.ttf", 10
-    )
-    source_code_pro_font = ImageFont.truetype(
-        "/home/evolmonster/InkyWeatherStation/fonts/SourceCodePro.ttf", 15
-    )
-    source_code_pro_bold_font = ImageFont.truetype(
-        "/home/evolmonster/InkyWeatherStation/fonts/SourceCodePro-Bold.ttf", 17
-    )
-    source_code_pro_bold_font_large = ImageFont.truetype(
-        "/home/evolmonster/InkyWeatherStation/fonts/SourceCodePro-Bold.ttf", 35
-    )
+    weather_icons_font = ImageFont.truetype("/home/evolmonster/InkyWeatherStation/fonts/weathericons-regular-webfont.ttf",46,)
+    weather_icons_font_small = ImageFont.truetype("/home/evolmonster/InkyWeatherStation/fonts/weathericons-regular-webfont.ttf",30,)
+    source_code_pro_font_small = ImageFont.truetype("/home/evolmonster/InkyWeatherStation/fonts/SourceCodePro.ttf", 10)
+    source_code_pro_font = ImageFont.truetype("/home/evolmonster/InkyWeatherStation/fonts/SourceCodePro.ttf", 15)
+    source_code_pro_bold_font = ImageFont.truetype("/home/evolmonster/InkyWeatherStation/fonts/SourceCodePro-Bold.ttf", 17)
+    source_code_pro_bold_font_large = ImageFont.truetype("/home/evolmonster/InkyWeatherStation/fonts/SourceCodePro-Bold.ttf", 35)
 
-    roboto_condensed_light = ImageFont.truetype(
-        "/home/evolmonster/InkyWeatherStation/fonts/RobotoCondensed-Light.ttf", 15
-    )
-    roboto_condensed_medium = ImageFont.truetype(
-        "/home/evolmonster/InkyWeatherStation/fonts/RobotoCondensed-Medium.ttf", 15
-    )
-    roboto_condensed_bold = ImageFont.truetype(
-        "/home/evolmonster/InkyWeatherStation/fonts/RobotoCondensed-Bold.ttf", 15
-    )
-    roboto_condensed_semibold = ImageFont.truetype(
-        "/home/evolmonster/InkyWeatherStation/fonts/RobotoCondensed-SemiBold.ttf", 15
-    )
-    roboto_condensed_regular = ImageFont.truetype(
-        "/home/evolmonster/InkyWeatherStation/fonts/RobotoCondensed-Regular.ttf", 15
-    )
-    roboto_condensed_bold_large = ImageFont.truetype(
-        "/home/evolmonster/InkyWeatherStation/fonts/RobotoCondensed-Bold.ttf", 35
-    )
+    roboto_condensed_light = ImageFont.truetype("/home/evolmonster/InkyWeatherStation/fonts/RobotoCondensed-Light.ttf", 15)
+    roboto_condensed_medium = ImageFont.truetype("/home/evolmonster/InkyWeatherStation/fonts/RobotoCondensed-Medium.ttf", 15)
+    roboto_condensed_bold = ImageFont.truetype("/home/evolmonster/InkyWeatherStation/fonts/RobotoCondensed-Bold.ttf", 15)
+    roboto_condensed_semibold = ImageFont.truetype("/home/evolmonster/InkyWeatherStation/fonts/RobotoCondensed-SemiBold.ttf", 15)
+    roboto_condensed_regular = ImageFont.truetype("/home/evolmonster/InkyWeatherStation/fonts/RobotoCondensed-Regular.ttf", 15)
+    roboto_condensed_bold_large = ImageFont.truetype("/home/evolmonster/InkyWeatherStation/fonts/RobotoCondensed-Bold.ttf", 35)
 
     # Get data from weather provider
     try:
@@ -90,7 +65,6 @@ def main():
 
         weather_data_response = WeatherDataHandler(data)
         weather_data = weather_data_response.weather_data
-        print(weather_data[0].weather_icon)
 
     except Exception as exc:
         LoggingHandler.handle_exception("Error in calling the weather API", exc)
@@ -131,11 +105,7 @@ def main():
 
     # Draw out the boxes on screen
     # canvas.line([(0,canvas_height / 2),(canvas_width,canvas_height / 2)], fill=inky_display.BLACK,width=3)
-    canvas.line(
-        [(canvas_width / 3, 0), (canvas_width / 3, canvas_height)],
-        fill=inky_display.BLACK,
-        width=3,
-    )
+    canvas.line([(canvas_width / 2.5, 0), (canvas_width / 2.5, canvas_height)], fill=inky_display.BLACK, width=3,)
     # canvas.line([(canvas_width / 1.43,0),(canvas_width /1.43,canvas_height / 2)], fill=inky_display.BLACK,width=2)
     # canvas.line([(canvas_width / 2.5,canvas_height/4),(canvas_width,canvas_height / 4)], fill=inky_display.BLACK,width=2)
     # canvas.line([(55, canvas_height / 2),(55,canvas_height / 2.25)], fill=inky_display.BLACK,width=1)
@@ -151,69 +121,43 @@ def main():
     # Set the message. If its night time, take the second icon, which is for night
 
     if current_weather_display:
+        weather_count = 0
+        weather_icon_placement = [[5,10], [5,80], [5,130], [5,180], [5,210], [5,260]]
+        moon_icon_placement = [[80,10], [60,80], [60,130], [60,180], [60,210], [60,260]]
+        wind_icon_placement = [[100,10], [100,80], [100,130], [100,180], [100,210], [100,260]]
+        rain_icon_placement = [[170,10], [170,80], [170,130], [170,180], [170,210], [170,260]]
+        uv_icon_placement = [[190,10], [190,80], [190,130], [190,180], [190,210], [190,260]]
+
+
         # Loop through each day of weather
         for weather in weather_data:
-            print(weather.weather_icon)
+            weather_font = weather_icons_font
+            if weather_count > 0:
+                weather_font = weather_icons_font_small
+                
+            canvas.text((weather_icon_placement[weather_count][0], weather_icon_placement[weather_count][1]), weather.weather_icon, inky_display.BLACK, font=weather_font)
+            canvas.text((moon_icon_placement[weather_count][0], moon_icon_placement[weather_count][1]), weather.moon_phase, inky_display.BLACK, font=weather_font)
+            canvas.text((wind_icon_placement[weather_count][0], wind_icon_placement[weather_count][1]), weather.wind_icon, inky_display.BLACK, font=weather_font)
+            canvas.text((rain_icon_placement[weather_count][0], rain_icon_placement[weather_count][1]), weather.precipitation_icon, inky_display.BLACK, font=weather_font)
+            canvas.text((uv_icon_placement[weather_count][0], uv_icon_placement[weather_count][1]), weather.uv_icon, inky_display.BLACK, font=weather_font)
 
-        current_icon = data.currentweather.icon[0]
-        if (
-            data.currentweather.dateTime > data.currentweather.sunrise
-            and data.currentweather.dateTime > data.currentweather.sunset
-        ):
-            current_icon = data.currentweather.icon[1]
+            weather_count += 1
 
-        current_description = data.currentweather.description
-        current_temp = str(data.currentweather.temp)  # TODO make a string in handler
-        current_max_temp = str(data.currentweather.max)  # TODO make a string in handler
-        current_min_temp = str(data.currentweather.min)  # TODO make a string in handler
-        current_feels = str(
-            data.currentweather.tempfeels
-        )  # TODO make a string in handler
-        current_sunrise = str(data.currentweather.sunrise.time())[0:5]
-        current_sunset = str(data.currentweather.sunset.time())[0:5]
-
-        # TODO If its sunny, show data like Humidity. Wind Speed.
-        # If its rainy, show % chance of rain. Cloud coverage etc.
-        # Put this logic in its own method
-
-        # Current weather icon
-        canvas.text((5, 10), current_icon, inky_display.BLACK, font=weather_icons_font)
 
         # Sunrise / Sunset display
-        canvas.text(
-            (18, 108), "\uf046", inky_display.BLACK, font=weather_icons_font_small
-        )
-        canvas.text(
-            (73, 108), "\uf047", inky_display.BLACK, font=weather_icons_font_small
-        )
-        canvas.text(
-            (5, 130), current_sunrise, inky_display.BLACK, font=roboto_condensed_light
-        )
-        canvas.text(
-            (60, 130), current_sunset, inky_display.BLACK, font=roboto_condensed_light
-        )
+        #canvas.text((18, 108), "\uf046", inky_display.BLACK, font=weather_icons_font_small)
+        #canvas.text((73, 108), "\uf047", inky_display.BLACK, font=weather_icons_font_small)
+        #canvas.text((5, 130), current_sunrise, inky_display.BLACK, font=roboto_condensed_light)
+        #canvas.text((60, 130), current_sunset, inky_display.BLACK, font=roboto_condensed_light)
 
         # Current weather temp and description
-        canvas.text(
-            (5, 5),
-            str(data.currentweather.dateTime.strftime("%A %d %b")).lower(),
-            inky_display.BLACK,
-            font=roboto_condensed_bold,
-        )
+        #canvas.text((5, 5), str(data.currentweather.dateTime.strftime("%A %d %b")).lower(), inky_display.BLACK, font=roboto_condensed_bold)
         # TODO If the current temp is >= 100 then make the text smaller and re-align to the left a bit
-        canvas.text(
-            (82, 17), current_temp, inky_display.BLACK, font=roboto_condensed_bold_large
-        )
-        canvas.text(
-            (82, 55), current_min_temp, inky_display.BLACK, font=roboto_condensed_light
-        )
-        canvas.text(
-            (100, 55), current_max_temp, inky_display.BLACK, font=roboto_condensed_light
-        )
+        #canvas.text((82, 17), current_temp, inky_display.BLACK, font=roboto_condensed_bold_large)
+        #canvas.text((82, 55), current_min_temp, inky_display.BLACK, font=roboto_condensed_light)
+        #canvas.text((100, 55), current_max_temp, inky_display.BLACK, font=roboto_condensed_light)
 
-        canvas.arc(
-            (70, 8, 130, 70), start=140, end=40, fill=inky_display.BLACK, width=4
-        )
+        #canvas.arc((70, 8, 130, 70), start=140, end=40, fill=inky_display.BLACK, width=4)
 
     if todo_list_display:
 
