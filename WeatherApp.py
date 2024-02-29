@@ -48,6 +48,7 @@ def main():
     source_code_pro_bold_font_large = ImageFont.truetype("/home/evolmonster/InkyWeatherStation/fonts/SourceCodePro-Bold.ttf", 35)
 
     roboto_condensed_light = ImageFont.truetype("/home/evolmonster/InkyWeatherStation/fonts/RobotoCondensed-Light.ttf", 15)
+    roboto_condensed_light_small = ImageFont.truetype("/home/evolmonster/InkyWeatherStation/fonts/RobotoCondensed-Light.ttf", 10)
     roboto_condensed_medium = ImageFont.truetype("/home/evolmonster/InkyWeatherStation/fonts/RobotoCondensed-Medium.ttf", 15)
     roboto_condensed_bold = ImageFont.truetype("/home/evolmonster/InkyWeatherStation/fonts/RobotoCondensed-Bold.ttf", 15)
     roboto_condensed_semibold = ImageFont.truetype("/home/evolmonster/InkyWeatherStation/fonts/RobotoCondensed-SemiBold.ttf", 15)
@@ -143,11 +144,14 @@ def main():
             canvas.text((weather_icon_placement[weather_count][0], weather_icon_placement[weather_count][1]), weather.weather_icon, inky_display.BLACK, font=weather_font)
             canvas.text((moon_icon_placement[weather_count][0], moon_icon_placement[weather_count][1]), weather.moon_phase, inky_display.BLACK, font=weather_icons_font_moon)
 
-            canvas.text((65,10), weather.precipitation_icon, inky_display.BLACK, font=weather_icons_font_smaller)
-            canvas.text((80, 15), weather.precipitation_chance, inky_display.BLACK, font=roboto_condensed_light)
-            print(type(weather.precipitation_chance))
-            canvas.text((65,25), weather.wind_icon, inky_display.BLACK, font=weather_icons_font_smaller)
-            canvas.text((80, 30), weather.wind_speed, inky_display.BLACK, font=roboto_condensed_light)
+            if weather_count == 0:
+                canvas.text((60,10), weather.precipitation_icon, inky_display.BLACK, font=weather_icons_font_smaller)
+                canvas.text((75, 15), weather.precipitation_chance, inky_display.BLACK, font=roboto_condensed_light)            
+                canvas.text((60,25), weather.wind_icon, inky_display.BLACK, font=weather_icons_font_smaller)
+                canvas.text((75, 30), weather.wind_speed, inky_display.BLACK, font=roboto_condensed_light)
+                canvas.text((90, 34), "mph", inky_display.BLACK, font=roboto_condensed_light_small)
+                canvas.text((60, 50), weather.temp, inky_display.BLACK, font=roboto_condensed_bold_large)
+                canvas.text((100, 42), "\uf042", inky_display.BLACK, font=weather_icons_font)
             
             #canvas.text((humidity_icon_placement[weather_count][0], humidity_icon_placement[weather_count][1]), weather.humidity_icon, inky_display.BLACK, font=weather_font)
             #canvas.text((cloud_icon_placement[weather_count][0], cloud_icon_placement[weather_count][1]), weather.cloud_icon, inky_display.BLACK, font=weather_font)

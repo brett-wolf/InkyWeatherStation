@@ -35,7 +35,7 @@ class WeatherData:
         self.moon_phase = moon_phase
         self.min_temp = min
         self.max_temp = max
-        self.temp = day
+        self.temp = str(day)
         self.morning_temp = morn
         self.evening_temp = eve
         self.night_temp = night
@@ -207,7 +207,9 @@ class WeatherDataHandler(object):
             uv_icon = "\uf052"
             wind_icon = "\uf04d"
             cloud_icon = "\uf083" #cloud with sun
-            weather_icon = weather_icon_array[0]          
+            weather_icon = weather_icon_array[0]  
+            precipitation = str(int(daydata["pop"] * 100))
+            wind_speed = str(int(daydata["wind_speed"]))
 
             if (
                 datetime.now() > datetime.fromtimestamp(daydata["sunrise"])
@@ -223,9 +225,9 @@ class WeatherDataHandler(object):
                     daydata["sunrise"],
                     daydata["sunset"],
                     moon_icon,
-                    daydata["temp"]["min"],
+                    str(daydata["temp"]["min"]),
                     daydata["temp"]["max"],
-                    daydata["temp"]["day"],
+                    int(math.ceil(daydata["temp"]["day"])),
                     daydata["temp"]["morn"],
                     daydata["temp"]["eve"],
                     daydata["temp"]["night"],
@@ -233,12 +235,12 @@ class WeatherDataHandler(object):
                     humidity_icon,
                     weather_icon,
                     daydata["weather"][0]["description"],
-                    str(int(daydata["pop"]) * 100),
+                    precipitation + "%",
                     precipitation_percentage_icon,
                     daydata["uvi"],
                     uv_icon,
                     day_of_the_week,
-                    str(int(daydata["wind_speed"])),
+                    wind_speed,
                     wind_icon,
                     daydata["clouds"],
                     cloud_icon
