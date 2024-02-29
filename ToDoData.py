@@ -31,6 +31,12 @@ class ToDoData(object):
             trimmed_task = self._trim_string(task.content, 30, "...")
             val.tasks.append(trimmed_task)
 
+        if len(val.tasks) > 14:
+            remaining_tasks = len(val.tasks) - 14
+            last_task = "+ %x other tasks..." % remaining_tasks
+            del val.tasks[13:]
+            val.tasks.append(last_task)
+
         return val
 
     def GetTodoList(self):

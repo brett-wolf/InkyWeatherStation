@@ -127,6 +127,7 @@ class WeatherDataHandler(object):
             957: ("\uf050" "\uf050"),  # strong-wind
         }
 
+
         if weatherID in weatherMap:
             return weatherMap[weatherID]
         # TODO: If not - return some default
@@ -195,23 +196,25 @@ class WeatherDataHandler(object):
         return_class = []
         days_count = 0
         for daydata in jsonobject["daily"]:
-            if days_count == 6: #stop when we have 5 days of weather
+            if days_count == 5: #stop when we have 5 days of weather
               break
 
             day_of_the_week = datetime.fromtimestamp(daydata["dt"]).strftime("%A")
             moon_icon = self._set_moon_icon(daydata["moon_phase"])
-            weather_icon = self._set_weather_icon(daydata["weather"][0]["id"])[0]
+            weather_icon_array = self._set_weather_icon(daydata["weather"][0]["id"])
             humidity_icon = "\uf07a"
             precipitation_percentage_icon = "\uf078"
             uv_icon = "\uf052"
-            wind_icon = "\uf050"
+            wind_icon = "\uf04d"
             cloud_icon = "\uf083" #cloud with sun
+            weather_icon = weather_icon_array[0]          
 
             if (
                 datetime.now() > datetime.fromtimestamp(daydata["sunrise"])
                 and datetime.now() > datetime.fromtimestamp(daydata["sunset"])
             ):
-                weather_icon = weather_icon[1]
+
+                weather_icon = weather_icon_array[1]
                 cloud_icon = "\uf081" #cloud with moon
 
             return_class.append(
@@ -230,12 +233,12 @@ class WeatherDataHandler(object):
                     humidity_icon,
                     weather_icon,
                     daydata["weather"][0]["description"],
-                    daydata["pop"],
+                    str(int(daydata["pop"]) * 100),
                     precipitation_percentage_icon,
                     daydata["uvi"],
                     uv_icon,
                     day_of_the_week,
-                    daydata["wind_speed"],
+                    str(int(daydata["wind_speed"])),
                     wind_icon,
                     daydata["clouds"],
                     cloud_icon
@@ -247,4 +250,5 @@ class WeatherDataHandler(object):
 
     def get_weather_data(self):
         print("In get_weather_data function")
+
         self.weather_data = self._parse_data(self.weather_data_json)

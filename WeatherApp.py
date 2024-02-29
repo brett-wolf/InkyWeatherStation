@@ -33,13 +33,15 @@ def main():
     # Set display visibility
     current_weather_display = True
     tomorrow_weather_display = False
-    todo_list_display = False
+    todo_list_display = True
     calendar_events_display = False
 
     #TODO Change these font locations to a variable in config
     # Load the fonts
     weather_icons_font = ImageFont.truetype("/home/evolmonster/InkyWeatherStation/fonts/weathericons-regular-webfont.ttf",46,)
+    weather_icons_font_moon = ImageFont.truetype("/home/evolmonster/InkyWeatherStation/fonts/weathericons-regular-webfont.ttf",53,)
     weather_icons_font_small = ImageFont.truetype("/home/evolmonster/InkyWeatherStation/fonts/weathericons-regular-webfont.ttf",30,)
+    weather_icons_font_smaller = ImageFont.truetype("/home/evolmonster/InkyWeatherStation/fonts/weathericons-regular-webfont.ttf",20,)
     source_code_pro_font_small = ImageFont.truetype("/home/evolmonster/InkyWeatherStation/fonts/SourceCodePro.ttf", 10)
     source_code_pro_font = ImageFont.truetype("/home/evolmonster/InkyWeatherStation/fonts/SourceCodePro.ttf", 15)
     source_code_pro_bold_font = ImageFont.truetype("/home/evolmonster/InkyWeatherStation/fonts/SourceCodePro-Bold.ttf", 17)
@@ -61,6 +63,7 @@ def main():
         )
         response = requests.get(url)
         data = response.json()
+
         response.close()
 
         weather_data_response = WeatherDataHandler(data)
@@ -98,10 +101,10 @@ def main():
     canvas_height = inky_display.height  # 300
     canvas_width = inky_display.width  # 400
 
-    try:
-        inky_display.set_border(inky_display.BLACK)
-    except NotImplementedError:
-        pass
+    #try:
+    #    inky_display.set_border(inky_display.BLACK)
+    #except NotImplementedError:
+    #    pass
 
     # Draw out the boxes on screen
     # canvas.line([(0,canvas_height / 2),(canvas_width,canvas_height / 2)], fill=inky_display.BLACK,width=3)
@@ -122,12 +125,14 @@ def main():
 
     if current_weather_display:
         weather_count = 0
-        weather_icon_placement = [[5,10], [5,80], [5,130], [5,180], [5,210], [5,260]]
-        moon_icon_placement = [[80,10], [60,80], [60,130], [60,180], [60,210], [60,260]]
-        wind_icon_placement = [[100,10], [100,80], [100,130], [100,180], [100,210], [100,260]]
-        rain_icon_placement = [[170,10], [170,80], [170,130], [170,180], [170,210], [170,260]]
-        uv_icon_placement = [[190,10], [190,80], [190,130], [190,180], [190,210], [190,260]]
+        weather_icon_placement = [[5,0], [5,100], [5,130], [5,180], [5,210]]
+        moon_icon_placement = [[110,0], [60,100], [60,130], [60,180], [60,210]]
+        rain_icon_placement = [[65,10], [170,80], [170,130], [170,180], [170,210]]
 
+        wind_icon_placement = [[100,10], [100,80], [100,130], [100,180], [100,210]]
+        uv_icon_placement = [[190,10], [190,80], [190,130], [190,180], [190,210]]
+        humidity_icon_placement = [[220,10], [220,80], [220,130], [220,180], [220,210]]
+        cloud_icon_placement = [[250,10], [250,80], [250,130], [250,180], [250,210]]
 
         # Loop through each day of weather
         for weather in weather_data:
@@ -136,10 +141,16 @@ def main():
                 weather_font = weather_icons_font_small
                 
             canvas.text((weather_icon_placement[weather_count][0], weather_icon_placement[weather_count][1]), weather.weather_icon, inky_display.BLACK, font=weather_font)
-            canvas.text((moon_icon_placement[weather_count][0], moon_icon_placement[weather_count][1]), weather.moon_phase, inky_display.BLACK, font=weather_font)
-            canvas.text((wind_icon_placement[weather_count][0], wind_icon_placement[weather_count][1]), weather.wind_icon, inky_display.BLACK, font=weather_font)
-            canvas.text((rain_icon_placement[weather_count][0], rain_icon_placement[weather_count][1]), weather.precipitation_icon, inky_display.BLACK, font=weather_font)
-            canvas.text((uv_icon_placement[weather_count][0], uv_icon_placement[weather_count][1]), weather.uv_icon, inky_display.BLACK, font=weather_font)
+            canvas.text((moon_icon_placement[weather_count][0], moon_icon_placement[weather_count][1]), weather.moon_phase, inky_display.BLACK, font=weather_icons_font_moon)
+
+            canvas.text((65,10), weather.precipitation_icon, inky_display.BLACK, font=weather_icons_font_smaller)
+            canvas.text((80, 15), weather.precipitation_chance, inky_display.BLACK, font=roboto_condensed_light)
+            print(type(weather.precipitation_chance))
+            canvas.text((65,25), weather.wind_icon, inky_display.BLACK, font=weather_icons_font_smaller)
+            canvas.text((80, 30), weather.wind_speed, inky_display.BLACK, font=roboto_condensed_light)
+            
+            #canvas.text((humidity_icon_placement[weather_count][0], humidity_icon_placement[weather_count][1]), weather.humidity_icon, inky_display.BLACK, font=weather_font)
+            #canvas.text((cloud_icon_placement[weather_count][0], cloud_icon_placement[weather_count][1]), weather.cloud_icon, inky_display.BLACK, font=weather_font)
 
             weather_count += 1
 
@@ -162,12 +173,12 @@ def main():
     if todo_list_display:
 
         # Add the TODO list data to canvas
-        canvas.text((150, 5), "todo:", inky_display.BLACK, font=roboto_condensed_bold)
-        todoline = 25
+        canvas.text((170, 5), "todo:", inky_display.BLACK, font=roboto_condensed_bold)
+        todoline = 23
         right_todo_line = 170
         tododotleft = 176
         tododotright = 181
-        todo_text_left = 150
+        todo_text_left = 180
         todo_dot_left = 5
 
         task_count = 0
@@ -180,12 +191,8 @@ def main():
             #    todoline = right_todo_line
 
             # canvas.ellipse((todo_dot_left, tododotleft, 10, tododotright), fill=inky_display.BLACK, width=4)
-            canvas.text(
-                (todo_text_left, todoline),
-                task,
-                inky_display.BLACK,
-                font=roboto_condensed_light,
-            )
+            canvas.text((todo_text_left - 10, todoline -5),"\uf042",inky_display.BLACK,font=weather_icons_font_small)
+            canvas.text((todo_text_left, todoline),task,inky_display.BLACK,font=roboto_condensed_light)
             todoline += 20
             tododotleft += 20
             tododotright += 20
