@@ -34,10 +34,12 @@ def main():
 
     #TODO Change these font locations to a variable in config
     # Load the fonts
-    weather_icons_font = ImageFont.truetype("/home/evolmonster/InkyWeatherStation/fonts/weathericons-regular-webfont.ttf",46,)
-    weather_icons_font_moon = ImageFont.truetype("/home/evolmonster/InkyWeatherStation/fonts/weathericons-regular-webfont.ttf",53,)
+    weather_icons_font = ImageFont.truetype("/home/evolmonster/InkyWeatherStation/fonts/weathericons-regular-webfont.ttf",40,)
+    weather_icons_font_moon = ImageFont.truetype("/home/evolmonster/InkyWeatherStation/fonts/weathericons-regular-webfont.ttf",46,)
+    weather_icons_font_moon_small = ImageFont.truetype("/home/evolmonster/InkyWeatherStation/fonts/weathericons-regular-webfont.ttf",30,)
     weather_icons_font_small = ImageFont.truetype("/home/evolmonster/InkyWeatherStation/fonts/weathericons-regular-webfont.ttf",30,)
     weather_icons_font_smaller = ImageFont.truetype("/home/evolmonster/InkyWeatherStation/fonts/weathericons-regular-webfont.ttf",20,)
+    weather_icons_font_week_smaller = ImageFont.truetype("/home/evolmonster/InkyWeatherStation/fonts/weathericons-regular-webfont.ttf",25,)
     source_code_pro_font_small = ImageFont.truetype("/home/evolmonster/InkyWeatherStation/fonts/SourceCodePro.ttf", 10)
     source_code_pro_font = ImageFont.truetype("/home/evolmonster/InkyWeatherStation/fonts/SourceCodePro.ttf", 15)
     source_code_pro_bold_font = ImageFont.truetype("/home/evolmonster/InkyWeatherStation/fonts/SourceCodePro-Bold.ttf", 17)
@@ -125,14 +127,11 @@ def main():
 
     if current_weather_display:
         weather_count = 0
-        weather_icon_placement = [[5,0], [5,100], [5,130], [5,180], [5,210]]
-        moon_icon_placement = [[110,0], [60,100], [60,130], [60,180], [60,210]]
-        rain_icon_placement = [[65,10], [170,80], [170,130], [170,180], [170,210]]
-
-        wind_icon_placement = [[100,10], [100,80], [100,130], [100,180], [100,210]]
-        uv_icon_placement = [[190,10], [190,80], [190,130], [190,180], [190,210]]
-        humidity_icon_placement = [[220,10], [220,80], [220,130], [220,180], [220,210]]
-        cloud_icon_placement = [[250,10], [250,80], [250,130], [250,180], [250,210]]
+        weather_icon_placement = [[0,0], [0,117], [0,162], [0,207], [0,252]]
+        moon_icon_placement = [[0,0], [130,115], [130,160], [130,205], [130,250]]
+        day_of_week_placement = [[0,0], [34,128], [34,173], [34,218], [34,263]]
+        low_icon_placement = [[0,0], [60,118], [60,163], [60,208], [60,253]]
+        high_icon_placement = [[0,0], [95,118], [95,163], [95,208], [95,253]]
 
         # Loop through each day of weather
         for weather in weather_data:
@@ -140,8 +139,8 @@ def main():
             #draw the current date weather at the top of the section
             #TODO Perhaps check the dates here instead of using 0. So if its today, use this data.
             if weather_count == 0:
-                canvas.text((0, -15), weather.weather_icon, inky_display.BLACK, font=weather_icons_font)
-                canvas.text((115, -17), weather.moon_phase, inky_display.BLACK, font=weather_icons_font_moon)
+                canvas.text((0, 0), weather.weather_icon, inky_display.BLACK, font=weather_icons_font)
+                canvas.text((120, -10), weather.moon_phase, inky_display.BLACK, font=weather_icons_font_moon)
                 canvas.text((60,-5), weather.precipitation_icon, inky_display.BLACK, font=weather_icons_font_smaller)
                 canvas.text((75, 0), weather.precipitation_chance, inky_display.BLACK, font=roboto_condensed_light)            
                 canvas.text((62,15), weather.wind_icon, inky_display.BLACK, font=weather_icons_font_smaller)
@@ -159,39 +158,42 @@ def main():
                     temp_x = 50
                 canvas.text((temp_x, 45), weather.temp, inky_display.BLACK, font=roboto_condensed_bold_large)
                 canvas.text((degree_x, 42), weather.degree_icon, inky_display.BLACK, font=weather_icons_font_small)
-
+                #TODO move all these magic icons into variables on the class
                 canvas.text((0, 40), "\uf044", inky_display.BLACK, font=weather_icons_font_small)
                 canvas.text((145, 40), "\uf058", inky_display.BLACK, font=weather_icons_font_small)
                 canvas.text((15, 53), weather.min_temp, inky_display.BLACK, font=roboto_condensed_light)
+                canvas.text((30, 43), weather.degree_icon, inky_display.BLACK, font=weather_icons_font_small)
 
-                max_temp_x = 128
+                max_temp_x = 123
                 if len(weather.max_temp) > 2:
-                    max_temp_x = 120
+                    max_temp_x = 112
                 canvas.text((max_temp_x, 53), weather.max_temp, inky_display.BLACK, font=roboto_condensed_light)
+                canvas.text((max_temp_x + 15, 43), weather.degree_icon, inky_display.BLACK, font=weather_icons_font_small)
                 canvas.text((0, 75), "\uf046", inky_display.BLACK, font=weather_icons_font_smaller)
                 canvas.text((135, 75), "\uf047", inky_display.BLACK, font=weather_icons_font_smaller)
 
-                canvas.text((30, 78), weather.morning_temp, inky_display.BLACK, font=roboto_condensed_light)
-                canvas.text((45, 68), weather.degree_icon, inky_display.BLACK, font=weather_icons_font_small)
+                canvas.text((26, 78), weather.morning_temp, inky_display.BLACK, font=roboto_condensed_light)
+                canvas.text((43, 68), weather.degree_icon, inky_display.BLACK, font=weather_icons_font_small)
                 canvas.text((115, 78), weather.night_temp, inky_display.BLACK, font=roboto_condensed_light)
                 canvas.text((130, 68), weather.degree_icon, inky_display.BLACK, font=weather_icons_font_small)
 
                 canvas.text((0, 97), weather.sunrise, inky_display.BLACK, font=roboto_condensed_light)                
                 canvas.text((127, 97), weather.sunset, inky_display.BLACK, font=roboto_condensed_light)
 
-                canvas.text((55, 97), weather.day_of_week, inky_display.BLACK, font=roboto_condensed_bold)
+                canvas.text((55, 97), weather.date_of_week, inky_display.BLACK, font=roboto_condensed_bold)
 
+            elif weather_count >0:
+                canvas.text((weather_icon_placement[weather_count][0], weather_icon_placement[weather_count][1]), weather.weather_icon, inky_display.BLACK, font=weather_icons_font_week_smaller)
+                canvas.text((moon_icon_placement[weather_count][0], moon_icon_placement[weather_count][1]), weather.moon_phase, inky_display.BLACK, font=weather_icons_font_moon_small)
+                canvas.text((day_of_week_placement[weather_count][0], day_of_week_placement[weather_count][1]), weather.day_of_week, inky_display.BLACK, font=roboto_condensed_light)
 
-
-
-
-            #elif weather_count >0:
-            #    canvas.text((weather_icon_placement[weather_count][0], weather_icon_placement[weather_count][1]), weather.weather_icon, inky_display.BLACK, font=weather_icons_font_smaller)
-            #    canvas.text((moon_icon_placement[weather_count][0], moon_icon_placement[weather_count][1]), weather.moon_phase, inky_display.BLACK, font=weather_icons_font_moon)
-
-
-            #canvas.text((humidity_icon_placement[weather_count][0], humidity_icon_placement[weather_count][1]), weather.humidity_icon, inky_display.BLACK, font=weather_font)
-            #canvas.text((cloud_icon_placement[weather_count][0], cloud_icon_placement[weather_count][1]), weather.cloud_icon, inky_display.BLACK, font=weather_font)
+                canvas.text((low_icon_placement[weather_count][0], low_icon_placement[weather_count][1]), "\uf044", inky_display.BLACK, font=weather_icons_font_week_smaller)
+                canvas.text((high_icon_placement[weather_count][0], high_icon_placement[weather_count][1]), "\uf058", inky_display.BLACK, font=weather_icons_font_week_smaller)
+                canvas.text((low_icon_placement[weather_count][0] + 10, low_icon_placement[weather_count][1] + 10), weather.min_temp, inky_display.BLACK, font=roboto_condensed_light)
+                canvas.text((high_icon_placement[weather_count][0] + 10, high_icon_placement[weather_count][1] + 10), weather.max_temp, inky_display.BLACK, font=roboto_condensed_light)
+                canvas.text((low_icon_placement[weather_count][0] + 25, low_icon_placement[weather_count][1] + 2), weather.degree_icon, inky_display.BLACK, font=weather_icons_font_week_smaller)
+                canvas.text((high_icon_placement[weather_count][0] + 25, high_icon_placement[weather_count][1] + 2), weather.degree_icon, inky_display.BLACK, font=weather_icons_font_week_smaller)
+                
 
             weather_count += 1
 

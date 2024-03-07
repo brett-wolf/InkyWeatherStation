@@ -24,6 +24,7 @@ class WeatherData:
         uvi,
         uv_icon,
         day_of_week,
+        date_of_week,
         wind_speed,
         wind_icon,
         cloud_percent,
@@ -49,6 +50,7 @@ class WeatherData:
         self.uv_index = uvi
         self.uv_icon = uv_icon
         self.day_of_week = day_of_week
+        self.date_of_week = date_of_week
         self.wind_speed = wind_speed
         self.wind_icon = wind_icon
         self.cloud_percent = cloud_percent
@@ -197,6 +199,18 @@ class WeatherDataHandler(object):
       return str(n)+("th" if 4<=n%100<=20 else {1:"st",2:"nd",3:"rd"}.get(n%10, "th"))
 
     def _parse_data(self, jsonobject):
+        #TODO for current weather bring in from 'current' weather data:
+        #temp, weather ID, wind speed, 
+        #maybe bring in rain value, which shows rain in mm
+
+        humidity_icon = "\uf07a"
+        precipitation_percentage_icon = "\uf078"
+        uv_icon = "\uf052"
+        wind_icon = "\uf0cc"
+        cloud_icon = "\uf083" #cloud with sun
+        cloud_with_moon_icon = "\uf081" #cloud with moon
+        degree_icon = "\uf042"
+
         return_class = []
         days_count = 0
         for daydata in jsonobject["daily"]:
@@ -204,26 +218,36 @@ class WeatherDataHandler(object):
               break
             day = int(datetime.fromtimestamp(daydata["dt"]).strftime("%-d"))
             date_ord = self._date_ordinal(day)
-            day_of_the_week = "{} {}".format(datetime.fromtimestamp(daydata["dt"]).strftime("%a"), date_ord)
+            day_of_the_week = datetime.fromtimestamp(daydata["dt"]).strftime("%a")
+            date_of_the_week = "{} {}".format(datetime.fromtimestamp(daydata["dt"]).strftime("%a"), date_ord)
             moon_icon = self._set_moon_icon(daydata["moon_phase"])
-            weather_icon_array = self._set_weather_icon(daydata["weather"][0]["id"])
-            humidity_icon = "\uf07a"
-            precipitation_percentage_icon = "\uf078"
-            uv_icon = "\uf052"
-            wind_icon = "\uf0cc"
-            cloud_icon = "\uf083" #cloud with sun
-            degree_icon = "\uf042"
-            weather_icon = weather_icon_array[0]  
             precipitation = str(int(daydata["pop"] * 100))
-            wind_speed = str(int(daydata["wind_speed"]))
 
+            #If we are getting weather for today, use the 'current' array for some values
+            weather_icon_array = self._set_weather_icon(daydata["weather"][0]["id"])  
+            wind_speed = str(int(daydata["wind_speed"]))
+            temp = str(int(math.ceil(daydata["temp"]["day"])))  
+            current_date = datetime.now().strftime("%x")
+            date_of_data = datetime.fromtimestamp(daydata["dt"]).strftime("%x")
+
+            #Get some of todays weather data from the 'current' section in the json response
+            if date_of_data == current_date:
+              weather_icon_array = self._set_weather_icon(jsonobject["current"]["weather"][0]["id"]) 
+              wind_speed = str(int(jsonobject["current"]["wind_speed"]))
+              temp = str(int(math.ceil(jsonobject["current"]["temp"]))) 
+
+            #Set weather icon, and set to night time icon if its after sunset
+            weather_icon = weather_icon_array[0]
             if (
                 datetime.now() > datetime.fromtimestamp(daydata["sunrise"])
                 and datetime.now() > datetime.fromtimestamp(daydata["sunset"])
             ):
 
                 weather_icon = weather_icon_array[1]
-                cloud_icon = "\uf081" #cloud with moon
+                cloud_icon = cloud_with_moon_icon
+            
+            if int(wind_speed) > 30:
+              wind_icon = "\uf0cd"
 
             return_class.append(
                 WeatherData(
@@ -233,7 +257,7 @@ class WeatherDataHandler(object):
                     moon_icon,
                     str(int(math.ceil(daydata["temp"]["min"]))),
                     str(int(math.ceil(daydata["temp"]["max"]))),
-                    str(int(math.ceil(daydata["temp"]["day"]))),
+                    temp,
                     str(int(math.ceil(daydata["temp"]["morn"]))),
                     str(int(math.ceil(daydata["temp"]["eve"]))),
                     str(int(math.ceil(daydata["temp"]["night"]))),
@@ -246,6 +270,7 @@ class WeatherDataHandler(object):
                     daydata["uvi"],
                     uv_icon,
                     day_of_the_week,
+                    date_of_the_week,
                     wind_speed,
                     wind_icon,
                     daydata["clouds"],
@@ -259,5 +284,5 @@ class WeatherDataHandler(object):
 
     def get_weather_data(self):
         print("In get_weather_data function")
-
+        
         self.weather_data = self._parse_data(self.weather_data_json)
