@@ -35,7 +35,7 @@ class WeatherData:
         self.moon_phase = moon_phase
         self.min_temp = min
         self.max_temp = max
-        self.temp = str(day)
+        self.temp = day
         self.morning_temp = morn
         self.evening_temp = eve
         self.night_temp = night
@@ -205,7 +205,7 @@ class WeatherDataHandler(object):
             humidity_icon = "\uf07a"
             precipitation_percentage_icon = "\uf078"
             uv_icon = "\uf052"
-            wind_icon = "\uf04d"
+            wind_icon = "\uf0cc"
             cloud_icon = "\uf083" #cloud with sun
             weather_icon = weather_icon_array[0]  
             precipitation = str(int(daydata["pop"] * 100))
@@ -222,12 +222,12 @@ class WeatherDataHandler(object):
             return_class.append(
                 WeatherData(
                     daydata["dt"],
-                    daydata["sunrise"],
-                    daydata["sunset"],
+                    str(datetime.fromtimestamp(daydata["sunrise"]).strftime("%H:%M")),
+                    str(datetime.fromtimestamp(daydata["sunset"]).strftime("%H:%M")),
                     moon_icon,
-                    str(daydata["temp"]["min"]),
-                    daydata["temp"]["max"],
-                    int(math.ceil(daydata["temp"]["day"])),
+                    str(int(math.ceil(daydata["temp"]["min"]))),
+                    str(int(math.ceil(daydata["temp"]["max"]))),
+                    str(int(math.ceil(daydata["temp"]["day"]))),
                     daydata["temp"]["morn"],
                     daydata["temp"]["eve"],
                     daydata["temp"]["night"],

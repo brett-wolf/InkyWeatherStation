@@ -26,10 +26,6 @@ def main():
         LoggingHandler.handle_exception("Inky display not found", exc)
         raise TypeError("You need to update the Inky library to >= v1.1.0")
 
-    # Set scaling for display size
-    scale_size = 2.20
-    padding = 15
-
     # Set display visibility
     current_weather_display = True
     tomorrow_weather_display = False
@@ -109,7 +105,10 @@ def main():
 
     # Draw out the boxes on screen
     # canvas.line([(0,canvas_height / 2),(canvas_width,canvas_height / 2)], fill=inky_display.BLACK,width=3)
-    canvas.line([(canvas_width / 2.5, 0), (canvas_width / 2.5, canvas_height)], fill=inky_display.BLACK, width=3,)
+    canvas.line([(canvas_width / 2.5, 0), (canvas_width / 2.5, canvas_height)], fill=inky_display.BLACK, width=2,)
+    canvas.line([(0, 95), (160,95)], fill=inky_display.BLACK, width=2,)
+    canvas.line([(0, 115), (160,115)], fill=inky_display.BLACK, width=2,)
+    #canvas.line([(0, 95), (0,115)], fill=inky_display.BLACK, width=2,)
     # canvas.line([(canvas_width / 1.43,0),(canvas_width /1.43,canvas_height / 2)], fill=inky_display.BLACK,width=2)
     # canvas.line([(canvas_width / 2.5,canvas_height/4),(canvas_width,canvas_height / 4)], fill=inky_display.BLACK,width=2)
     # canvas.line([(55, canvas_height / 2),(55,canvas_height / 2.25)], fill=inky_display.BLACK,width=1)
@@ -137,22 +136,52 @@ def main():
 
         # Loop through each day of weather
         for weather in weather_data:
-            weather_font = weather_icons_font
-            if weather_count > 0:
-                weather_font = weather_icons_font_small
-                
-            canvas.text((weather_icon_placement[weather_count][0], weather_icon_placement[weather_count][1]), weather.weather_icon, inky_display.BLACK, font=weather_font)
-            canvas.text((moon_icon_placement[weather_count][0], moon_icon_placement[weather_count][1]), weather.moon_phase, inky_display.BLACK, font=weather_icons_font_moon)
 
+            #draw the current date weather at the top of the section
+            #TODO Perhaps check the dates here instead of using 0. So if its today, use this data.
             if weather_count == 0:
-                canvas.text((60,10), weather.precipitation_icon, inky_display.BLACK, font=weather_icons_font_smaller)
-                canvas.text((75, 15), weather.precipitation_chance, inky_display.BLACK, font=roboto_condensed_light)            
-                canvas.text((60,25), weather.wind_icon, inky_display.BLACK, font=weather_icons_font_smaller)
-                canvas.text((75, 30), weather.wind_speed, inky_display.BLACK, font=roboto_condensed_light)
-                canvas.text((90, 34), "mph", inky_display.BLACK, font=roboto_condensed_light_small)
-                canvas.text((60, 50), weather.temp, inky_display.BLACK, font=roboto_condensed_bold_large)
-                canvas.text((100, 42), "\uf042", inky_display.BLACK, font=weather_icons_font)
-            
+                canvas.text((0, -15), weather.weather_icon, inky_display.BLACK, font=weather_icons_font)
+                canvas.text((115, -17), weather.moon_phase, inky_display.BLACK, font=weather_icons_font_moon)
+                canvas.text((60,-5), weather.precipitation_icon, inky_display.BLACK, font=weather_icons_font_smaller)
+                canvas.text((75, 0), weather.precipitation_chance, inky_display.BLACK, font=roboto_condensed_light)            
+                canvas.text((62,15), weather.wind_icon, inky_display.BLACK, font=weather_icons_font_smaller)
+                canvas.text((75, 23), weather.wind_speed, inky_display.BLACK, font=roboto_condensed_light)
+                
+                wind_mph_x = 85
+                if len(weather.wind_speed) == 2:
+                    wind_mph_x = 92
+                canvas.text((wind_mph_x, 26), "mph", inky_display.BLACK, font=roboto_condensed_light_small)
+
+                degree_x = 98
+                temp_x = 60
+                if len(weather.temp) > 2:
+                    degree_x = 105
+                    temp_x = 50
+                canvas.text((temp_x, 45), weather.temp, inky_display.BLACK, font=roboto_condensed_bold_large)
+                canvas.text((degree_x, 42), "\uf042", inky_display.BLACK, font=weather_icons_font_small)
+
+                canvas.text((0, 40), "\uf044", inky_display.BLACK, font=weather_icons_font_small)
+                canvas.text((145, 40), "\uf058", inky_display.BLACK, font=weather_icons_font_small)
+                canvas.text((15, 53), weather.min_temp, inky_display.BLACK, font=roboto_condensed_light)
+
+                max_temp_x = 128
+                if len(weather.max_temp) > 2:
+                    max_temp_x = 120
+                canvas.text((max_temp_x, 53), weather.max_temp, inky_display.BLACK, font=roboto_condensed_light)
+                canvas.text((0, 75), "\uf046", inky_display.BLACK, font=weather_icons_font_smaller)
+                canvas.text((135, 75), "\uf047", inky_display.BLACK, font=weather_icons_font_smaller)
+
+                canvas.text((0, 97), weather.sunrise, inky_display.BLACK, font=roboto_condensed_light)
+                canvas.text((127, 97), weather.sunset, inky_display.BLACK, font=roboto_condensed_light)
+
+
+
+
+            #elif weather_count >0:
+            #    canvas.text((weather_icon_placement[weather_count][0], weather_icon_placement[weather_count][1]), weather.weather_icon, inky_display.BLACK, font=weather_icons_font_smaller)
+            #    canvas.text((moon_icon_placement[weather_count][0], moon_icon_placement[weather_count][1]), weather.moon_phase, inky_display.BLACK, font=weather_icons_font_moon)
+
+
             #canvas.text((humidity_icon_placement[weather_count][0], humidity_icon_placement[weather_count][1]), weather.humidity_icon, inky_display.BLACK, font=weather_font)
             #canvas.text((cloud_icon_placement[weather_count][0], cloud_icon_placement[weather_count][1]), weather.cloud_icon, inky_display.BLACK, font=weather_font)
 
