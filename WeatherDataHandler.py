@@ -27,7 +27,8 @@ class WeatherData:
         wind_speed,
         wind_icon,
         cloud_percent,
-        cloud_icon
+        cloud_icon,
+        degree_icon
     ):
         self.datetime = dt
         self.sunrise = sunrise
@@ -52,7 +53,7 @@ class WeatherData:
         self.wind_icon = wind_icon
         self.cloud_percent = cloud_percent
         self.cloud_icon = cloud_icon
-
+        self.degree_icon = degree_icon
 
 class WeatherDataHandler(object):
 
@@ -192,14 +193,18 @@ class WeatherDataHandler(object):
         else:
           return "\uf070"
 
+    def _date_ordinal(self, n):
+      return str(n)+("th" if 4<=n%100<=20 else {1:"st",2:"nd",3:"rd"}.get(n%10, "th"))
+
     def _parse_data(self, jsonobject):
         return_class = []
         days_count = 0
         for daydata in jsonobject["daily"]:
             if days_count == 5: #stop when we have 5 days of weather
               break
-
-            day_of_the_week = datetime.fromtimestamp(daydata["dt"]).strftime("%A")
+            day = int(datetime.fromtimestamp(daydata["dt"]).strftime("%-d"))
+            date_ord = self._date_ordinal(day)
+            day_of_the_week = "{} {}".format(datetime.fromtimestamp(daydata["dt"]).strftime("%a"), date_ord)
             moon_icon = self._set_moon_icon(daydata["moon_phase"])
             weather_icon_array = self._set_weather_icon(daydata["weather"][0]["id"])
             humidity_icon = "\uf07a"
@@ -207,6 +212,7 @@ class WeatherDataHandler(object):
             uv_icon = "\uf052"
             wind_icon = "\uf0cc"
             cloud_icon = "\uf083" #cloud with sun
+            degree_icon = "\uf042"
             weather_icon = weather_icon_array[0]  
             precipitation = str(int(daydata["pop"] * 100))
             wind_speed = str(int(daydata["wind_speed"]))
@@ -228,9 +234,9 @@ class WeatherDataHandler(object):
                     str(int(math.ceil(daydata["temp"]["min"]))),
                     str(int(math.ceil(daydata["temp"]["max"]))),
                     str(int(math.ceil(daydata["temp"]["day"]))),
-                    daydata["temp"]["morn"],
-                    daydata["temp"]["eve"],
-                    daydata["temp"]["night"],
+                    str(int(math.ceil(daydata["temp"]["morn"]))),
+                    str(int(math.ceil(daydata["temp"]["eve"]))),
+                    str(int(math.ceil(daydata["temp"]["night"]))),
                     daydata["humidity"],
                     humidity_icon,
                     weather_icon,
@@ -243,7 +249,8 @@ class WeatherDataHandler(object):
                     wind_speed,
                     wind_icon,
                     daydata["clouds"],
-                    cloud_icon
+                    cloud_icon,
+                    degree_icon
                 )
             )
             days_count += 1

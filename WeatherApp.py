@@ -158,7 +158,7 @@ def main():
                     degree_x = 105
                     temp_x = 50
                 canvas.text((temp_x, 45), weather.temp, inky_display.BLACK, font=roboto_condensed_bold_large)
-                canvas.text((degree_x, 42), "\uf042", inky_display.BLACK, font=weather_icons_font_small)
+                canvas.text((degree_x, 42), weather.degree_icon, inky_display.BLACK, font=weather_icons_font_small)
 
                 canvas.text((0, 40), "\uf044", inky_display.BLACK, font=weather_icons_font_small)
                 canvas.text((145, 40), "\uf058", inky_display.BLACK, font=weather_icons_font_small)
@@ -171,8 +171,16 @@ def main():
                 canvas.text((0, 75), "\uf046", inky_display.BLACK, font=weather_icons_font_smaller)
                 canvas.text((135, 75), "\uf047", inky_display.BLACK, font=weather_icons_font_smaller)
 
-                canvas.text((0, 97), weather.sunrise, inky_display.BLACK, font=roboto_condensed_light)
+                canvas.text((30, 78), weather.morning_temp, inky_display.BLACK, font=roboto_condensed_light)
+                canvas.text((45, 68), weather.degree_icon, inky_display.BLACK, font=weather_icons_font_small)
+                canvas.text((115, 78), weather.night_temp, inky_display.BLACK, font=roboto_condensed_light)
+                canvas.text((130, 68), weather.degree_icon, inky_display.BLACK, font=weather_icons_font_small)
+
+                canvas.text((0, 97), weather.sunrise, inky_display.BLACK, font=roboto_condensed_light)                
                 canvas.text((127, 97), weather.sunset, inky_display.BLACK, font=roboto_condensed_light)
+
+                canvas.text((55, 97), weather.day_of_week, inky_display.BLACK, font=roboto_condensed_bold)
+
 
 
 
