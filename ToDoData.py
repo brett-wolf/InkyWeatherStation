@@ -28,7 +28,7 @@ class ToDoData(object):
         val.tasks = []
 
         for task in tasklist:
-            trimmed_task = self._trim_string(task.content, 30, "...")
+            trimmed_task = self._trim_string(task.content, 37, "...")
             val.tasks.append(trimmed_task)
 
         if len(val.tasks) > 14:

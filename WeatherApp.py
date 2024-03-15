@@ -257,10 +257,12 @@ def main():
             # print(event.date)
             # print(event.time)
 
+
+
     # Update the Inky display with canvas data
     inky_display.set_image(img)
     inky_display.show()
-
+    
     # Write date and time to log file to signify last run
     LoggingHandler.log_run_complete()
 
