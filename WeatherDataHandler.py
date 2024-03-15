@@ -199,10 +199,6 @@ class WeatherDataHandler(object):
       return str(n)+("th" if 4<=n%100<=20 else {1:"st",2:"nd",3:"rd"}.get(n%10, "th"))
 
     def _parse_data(self, jsonobject):
-        #TODO for current weather bring in from 'current' weather data:
-        #temp, weather ID, wind speed, 
-        #maybe bring in rain value, which shows rain in mm
-
         humidity_icon = "\uf07a"
         precipitation_percentage_icon = "\uf078"
         uv_icon = "\uf052"
