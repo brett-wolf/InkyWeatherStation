@@ -26,7 +26,8 @@ class ToDoData(object):
     def _parse_data(self, tasklist):
         val = Values()
         val.tasks = []
-
+        print("Parsing task data")
+        
         for task in tasklist:
             trimmed_task = self._trim_string(task.content, 37, "...")
             val.tasks.append(trimmed_task)
@@ -40,7 +41,8 @@ class ToDoData(object):
         return val
 
     def GetTodoList(self):
-        print("Getting ToDoList")
+        print(f"Getting ToDoList for API Key: {self._todoapikey} and project: {self._projectid}")
+        
         api = TodoistAPI(self._todoapikey)
         todolist = api.get_tasks(project_id=self._projectid)
         self.todolist = self._parse_data(todolist)
