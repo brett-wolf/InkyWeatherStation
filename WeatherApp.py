@@ -64,6 +64,7 @@ def main():
         data = response.json()
 
         response.close()
+        print("Weather API data received. Extracting data")
 
         weather_data_response = WeatherDataHandler(data)
         weather_data = weather_data_response.weather_data
