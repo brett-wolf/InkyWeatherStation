@@ -4,3 +4,4 @@ __pycache__
 config/token.json
 config/googlesecretdesktop.json
 logs/lastrun.txt
+config/config.json
