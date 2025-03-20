@@ -58,6 +58,8 @@ def main():
         url = config.weather_url.format(
             config.latitude, config.longitude, config.weather_api_key
         )
+        print(f"Weather URL: {url}")
+        
         response = requests.get(url)
         data = response.json()
 
